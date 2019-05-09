@@ -2,6 +2,7 @@
 
 var AWS = require('aws-sdk');
 var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+const generate = require('nanoid/generate');
 
 exports.handler = (event, context, callback) => {
 
@@ -30,7 +31,8 @@ exports.handler = (event, context, callback) => {
         MessageBody: JSON.stringify({
             name: "" + key,
             prefix: "" + prefix,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            imageId: generate("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 21)
         }),
     };
 
