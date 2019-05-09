@@ -7,6 +7,7 @@ exports.handler = (event, context, callback) => {
 
     let key;
     let prefix;
+    let filetype;
 
     try {
         let records = event.Records;
@@ -18,6 +19,7 @@ exports.handler = (event, context, callback) => {
             let itemName = path.split("/");
             key = itemName[itemName.length - 1];
             prefix = path.slice(0, path.length - key.length);
+            filetype = itemName.split(".")[itemName.split(".").length - 1];
         }
     }
     catch (e) {
@@ -30,8 +32,15 @@ exports.handler = (event, context, callback) => {
             prefix: "" + prefix,
             timestamp: Date.now()
         }),
-        QueueUrl: "" + process.env.queueUrl
     };
+
+    if (filetype === "jpg" || filetype === "jpeg") {
+        params.QueueUrl = "" + process.env.jpgQueue;
+    }
+    if (filetype === "png") {
+        params.QueueUrl = "" + process.env.pngQueue;
+    }
+
     sqs.sendMessage(params, function(err, data) {
         if (err) {
             console.log(err, err.stack);
