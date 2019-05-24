@@ -1,7 +1,8 @@
 'use strict';
 
-var AWS = require('aws-sdk');
-var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+const AWSXRay = require('aws-xray-sdk-core');
+const AWS = AWSXRay.captureAWS(require('aws-sdk'));
+const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 const generate = require('nanoid/generate');
 
 exports.handler = (event, context, callback) => {
@@ -20,7 +21,7 @@ exports.handler = (event, context, callback) => {
             let itemName = path.split("/");
             key = itemName[itemName.length - 1];
             prefix = path.slice(0, path.length - key.length);
-            filetype = itemName.split(".")[itemName.split(".").length - 1];
+            filetype = key.split(".")[key.split(".").length - 1];
         }
     }
     catch (e) {
